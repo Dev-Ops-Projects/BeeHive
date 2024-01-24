@@ -57,11 +57,11 @@ def version():
 @app.route('/temperature')
 def temperature():
     """Return the average temperature."""
-    try:
-        avg_temp = fetch_temperature_data()
-        return jsonify({"average_temperature": avg_temp})
-    except requests.RequestException as e:
-        return jsonify({"error": str(e)}), 500
+    avg_temp = fetch_temperature_data()
+    if avg_temp is None:
+        return jsonify({"error": "Data fetch failed"}), 500
+    return jsonify({"average_temperature": avg_temp})
+
 
 
 if __name__ == '__main__':
