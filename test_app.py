@@ -30,7 +30,7 @@ def test_temperature_endpoint_success(mock_get, test_client):
                 "title": "Temperatur",
                 "lastMeasurement": {
                     "value": "20.0",
-                    "createdAt": datetime.utcnow().isoformat() + "Z"  # Ensure the time is within the last hour
+                    "createdAt": datetime.utcnow().isoformat() + "Z" 
                 }
             }
             # Include other sensors if necessary
