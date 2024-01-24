@@ -6,10 +6,10 @@ import requests
 from app import app
 
 @pytest.fixture
-def client():
+def test_client():
     """Fixture to create a test client for the Flask app."""
-    with app.test_client() as test_client:
-        yield test_client
+    with app.test_client() as client:
+        yield client
 
 def test_version_endpoint(test_client):
     """Test the /version endpoint for correct response."""
