@@ -3,10 +3,11 @@
 """Module for testing app.py endpoints."""
 
 from unittest.mock import patch
+from datetime import datetime
 import pytest
 import requests
 from app import app
-from datetime import datetime
+
 
 @pytest.fixture
 def test_client():
