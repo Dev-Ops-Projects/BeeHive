@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 import requests
 from app import app
+from datetime import datetime
 
 @pytest.fixture
 def test_client():
@@ -28,9 +29,10 @@ def test_temperature_endpoint_success(mock_get, test_client):
                 "title": "Temperatur",
                 "lastMeasurement": {
                     "value": "20.0",
-                    "createdAt": "2021-01-01T01:00:00.000Z"
+                    "createdAt": datetime.utcnow().isoformat() + "Z"  # Ensure the time is within the last hour
                 }
             }
+            # Include other sensors if necessary
         ]
     }
     mock_response = requests.Response()
