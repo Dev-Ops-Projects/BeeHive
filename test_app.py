@@ -1,7 +1,7 @@
 """Module for testing app.py endpoints."""
 
-import pytest
 from unittest.mock import patch
+import pytest
 import requests
 from app import app
 
