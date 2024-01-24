@@ -17,23 +17,33 @@ def fetch_temperature_data():
     temperatures = []
 
     for box_id in sense_box_ids:
-        try:
-            url = f"https://api.opensensemap.org/boxes/{box_id}?format=json"
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                for sensor in data['sensors']:
-                    if sensor['title'] == 'Temperatur' and 'lastMeasurement' in sensor:
-                        measurement = sensor['lastMeasurement']
-                        timestamp = datetime.strptime(
-                            measurement['createdAt'], '%Y-%m-%dT%H:%M:%S.%fZ')
-                        if datetime.utcnow() - timestamp <= timedelta(hours=1):
-                            temperatures.append(float(measurement['value']))
-        except requests.RequestException as e:
-            print(f"Request error: {e}")
-            return None
+        temperatures.extend(get_temperatures_for_box(box_id))
 
     return sum(temperatures) / len(temperatures) if temperatures else None
+
+
+def get_temperatures_for_box(box_id):
+    """Helper function to get temperatures for a single box."""
+    try:
+        url = f"https://api.opensensemap.org/boxes/{box_id}?format=json"
+        response = requests.get(url, timeout=10)
+        return parse_sensor_data(response) if response.status_code == 200 else []
+    except requests.RequestException as e:
+        print(f"Request error: {e}")
+        return []
+
+
+def parse_sensor_data(response):
+    """Parse sensor data from response to extract temperatures."""
+    temperatures = []
+    data = response.json()
+    for sensor in data['sensors']:
+        if sensor['title'] == 'Temperatur' and 'lastMeasurement' in sensor:
+            measurement = sensor['lastMeasurement']
+            timestamp = datetime.strptime(measurement['createdAt'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            if datetime.utcnow() - timestamp <= timedelta(hours=1):
+                temperatures.append(float(measurement['value']))
+    return temperatures
 
 
 @app.route('/version')
@@ -48,7 +58,7 @@ def temperature():
     try:
         avg_temp = fetch_temperature_data()
         return jsonify({"average_temperature": avg_temp})
-    except Exception as e:
+    except requests.RequestException as e:
         return jsonify({"error": str(e)}), 500
 
 

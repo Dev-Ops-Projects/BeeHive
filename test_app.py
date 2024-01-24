@@ -20,11 +20,20 @@ def test_version_endpoint(test_client):
 @patch('app.requests.get')
 def test_temperature_endpoint_success(mock_get, test_client):
     """Test the /temperature endpoint for success scenario."""
+    mock_data = {
+        "sensors": [
+            {
+                "title": "Temperatur",
+                "lastMeasurement": {
+                    "value": "20.0",
+                    "createdAt": "2021-01-01T01:00:00.000Z"
+                }
+            }
+        ]
+    }
     mock_response = requests.Response()
     mock_response.status_code = 200
-    mock_data = b'{"sensors":[{"title":"Temperatur","lastMeasurement":' \
-                b'{"value":"20.0","createdAt":"2021-01-01T01:00:00.000Z"}}]}'
-    mock_response._content = mock_data
+    mock_response.json = lambda: mock_data
     mock_get.return_value = mock_response
 
     response = test_client.get('/temperature')
