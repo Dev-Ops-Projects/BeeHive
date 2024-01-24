@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8' # Replace with your Python version
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint pytest # Install Pylint and pytest
+
+    - name: Lint with Pylint
+      run: pylint *.py
+
+    - name: Run Unit Tests
+      run: pytest
+
+    - name: Lint Dockerfile
+      uses: hadolint/hadolint-action@v1.5.0
+      with:
+        dockerfile: ./Dockerfile
+
+    - name: Build Docker image
+      run: docker build . --file Dockerfile --tag your-image-name
