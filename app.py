@@ -1,4 +1,6 @@
-"""Module docstring: This module fetches data from the opensensemap api for the 3 given sensors and makes a temperature average of the 3."""
+"""Module docstring: This module fetches data from the opensensemap api for the 3 given sensors 
+and makes a temperature average of the 3."""
+
 
 from datetime import datetime, timedelta
 from flask import Flask, jsonify
