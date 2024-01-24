@@ -1,3 +1,5 @@
+# pylint: disable=redefined-outer-name
+
 """Module for testing app.py endpoints."""
 
 from unittest.mock import patch
