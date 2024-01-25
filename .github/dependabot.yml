@@ -1,0 +1,7 @@
+version: 2
+updates:
+  - package-ecosystem: "pip" # For Python projects
+    directory: "/" # Root directory where 'requirements.txt' or 'Pipfile' is located
+    schedule:
+      interval: "weekly" # Frequency for dependency check
+    open-pull-requests-limit: 10 # Maximum number of open pull requests
