@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -36,15 +36,15 @@ jobs:
         dockerfile: ./Dockerfile
 
     - name: Build Docker image
-      run: docker build -t beehive .
+      run: docker build . --file Dockerfile --tag beehive
 
-    - name: Run Docker Container
-      run: docker run -d -p 8080:80 --name beehive beehive
-
-    - name: Test /version Endpoint
+    - name: Test /version endpoint
       run: |
-        sleep 10
-        curl http://localhost:8080/version
+        response=$(curl -s http://localhost/version)
+        if [ "$response" = '{"version": "0.0.1"}' ]; then
+          echo "Version endpoint test passed"
+        else
+          echo "Version endpoint test failed"
+          exit 1
+        fi
 
-    - name: Stop Docker Container
-      run: docker stop beehive
