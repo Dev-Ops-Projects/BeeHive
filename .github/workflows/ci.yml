@@ -36,10 +36,10 @@ jobs:
         dockerfile: ./Dockerfile
 
     - name: Build Docker image
-      run: docker build -t BeeHive .
+      run: docker build -t beehive .
 
     - name: Run Docker Container
-      run: docker run -d -p 8080:80 --name beehive BeeHive
+      run: docker run -d -p 8080:80 --name beehive beehive
 
     - name: Test /version Endpoint
       run: |
