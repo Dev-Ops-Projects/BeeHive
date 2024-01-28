@@ -43,7 +43,7 @@ jobs:
 
     - name: Test /version Endpoint
       run: |
-        sleep 10 # Wait for the container to start (adjust as needed)
+        sleep 10
         curl http://localhost:8080/version
 
     - name: Stop Docker Container
