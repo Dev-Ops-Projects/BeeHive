@@ -5,6 +5,7 @@ and makes a temperature average of the 3."""
 from datetime import datetime, timedelta
 from flask import Flask, jsonify
 import requests
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
 

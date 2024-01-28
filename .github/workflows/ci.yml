@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -36,4 +36,15 @@ jobs:
         dockerfile: ./Dockerfile
 
     - name: Build Docker image
-      run: docker build . --file Dockerfile --tag your-image-name
+      run: docker build -t BeeHive .
+
+    - name: Run Docker Container
+      run: docker run -d -p 8080:80 --name beehive BeeHive
+
+    - name: Test /version Endpoint
+      run: |
+        sleep 10 # Wait for the container to start (adjust as needed)
+        curl http://localhost:8080/version
+
+    - name: Stop Docker Container
+      run: docker stop beehive
