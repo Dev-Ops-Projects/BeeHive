@@ -1,24 +1,25 @@
 """Module docstring: This module fetches data from the opensensemap api for the 3 given sensors 
 and makes a temperature average of the 3."""
 
-
+import os
 from datetime import datetime, timedelta
 from flask import Flask, jsonify
 import requests
 
 app = Flask(__name__)
 
+# Define the senseBox IDs as environment variables or provide default values
+SENSE_BOX_IDS = [
+    os.getenv("SENSE_BOX_ID_1", "6007eb18942e57001bbead04"),
+    os.getenv("SENSE_BOX_ID_2", "60ff9649482ba8001ca9c072"),
+    os.getenv("SENSE_BOX_ID_3", "5f16ff68e8f87e001c0ec82f")
+]
 
 def fetch_temperature_data():
     """Fetch temperature data and return the average if data is no older than 1 hour."""
-    sense_box_ids = [
-        "6007eb18942e57001bbead04",
-        "60ff9649482ba8001ca9c072",
-        "5f16ff68e8f87e001c0ec82f"
-    ]
     temperatures = []
 
-    for box_id in sense_box_ids:
+    for box_id in SENSE_BOX_IDS:
         temperatures.extend(get_temperatures_for_box(box_id))
 
     return sum(temperatures) / len(temperatures) if temperatures else None
