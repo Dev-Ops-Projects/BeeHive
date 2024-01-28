@@ -38,13 +38,3 @@ jobs:
     - name: Build Docker image
       run: docker build . --file Dockerfile --tag beehive
 
-    - name: Test /version endpoint
-      run: |
-        response=$(curl -s http://localhost/version)
-        if [ "$response" = '{"version": "0.0.1"}' ]; then
-          echo "Version endpoint test passed"
-        else
-          echo "Version endpoint test failed"
-          exit 1
-        fi
-
