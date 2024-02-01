@@ -5,8 +5,10 @@ import os
 from datetime import datetime, timedelta
 from flask import Flask, jsonify
 import requests
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)
 
 # Define the senseBox IDs as environment variables or provide default values
 SENSE_BOX_IDS = [
@@ -24,7 +26,6 @@ def fetch_temperature_data():
 
     return sum(temperatures) / len(temperatures) if temperatures else None
 
-
 def get_temperatures_for_box(box_id):
     """Helper function to get temperatures for a single box."""
     try:
@@ -34,7 +35,6 @@ def get_temperatures_for_box(box_id):
     except requests.RequestException as e:
         print(f"Request error: {e}")
         return []
-
 
 def parse_sensor_data(response):
     """Parse sensor data from response to extract temperatures."""
@@ -48,22 +48,27 @@ def parse_sensor_data(response):
                 temperatures.append(float(measurement['value']))
     return temperatures
 
-
 @app.route('/version')
 def version():
     """Return the version of the application."""
     return jsonify({"version": "0.0.1"})
 
-
 @app.route('/temperature')
 def temperature():
-    """Return the average temperature."""
+    """Return the average temperature and status."""
     avg_temp = fetch_temperature_data()
     if avg_temp is None:
         return jsonify({"error": "Data fetch failed"}), 500
-    return jsonify({"average_temperature": avg_temp})
 
+    # Determine the temperature status
+    status = "Good"
+    if avg_temp < 10:
+        status = "Too Cold"
+    elif avg_temp > 37:
+        status = "Too Hot"
 
+    return jsonify({"average_temperature": avg_temp, "status": status})
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=False, host='0.0.0.0', port=5000)
+
